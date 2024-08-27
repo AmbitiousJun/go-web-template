@@ -1,0 +1,426 @@
+basePath: /api
+definitions:
+  dto.UserCreate:
+    properties:
+      account:
+        description: 登录账号
+        type: string
+      avatar:
+        description: 用户头像
+        type: string
+      role:
+        description: 用户角色
+        type: string
+      userName:
+        description: 用户昵称
+        type: string
+    type: object
+  dto.UserLogin:
+    properties:
+      account:
+        description: 登录账号
+        type: string
+      password:
+        description: 登录密码
+        type: string
+    type: object
+  dto.UserRegister:
+    properties:
+      account:
+        description: 登录账号
+        type: string
+      checkPass:
+        description: 二次输入密码
+        type: string
+      password:
+        description: 登录密码
+        type: string
+    type: object
+  dto.UserUpdate:
+    properties:
+      avatar:
+        description: 用户头像
+        type: string
+      id:
+        description: 用户 id
+        type: integer
+      profile:
+        description: 用户简介
+        type: string
+      role:
+        description: 用户角色
+        type: string
+      userName:
+        description: 用户昵称
+        type: string
+    type: object
+  entity.Page-vo_User:
+    properties:
+      current:
+        type: integer
+      records:
+        items:
+          $ref: '#/definitions/vo.User'
+        type: array
+      size:
+        type: integer
+      totalPages:
+        type: integer
+      totalRecords:
+        type: integer
+    type: object
+  entity.User:
+    properties:
+      account:
+        type: string
+      avatar:
+        type: string
+      createTime:
+        type: string
+      deleteTime:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      password:
+        type: string
+      profile:
+        type: string
+      role:
+        type: string
+      updateTime:
+        type: string
+      userName:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  response.R-entity_Page-vo_User:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/entity.Page-vo_User'
+      message:
+        type: string
+    type: object
+  response.R-string:
+    properties:
+      code:
+        type: integer
+      data:
+        type: string
+      message:
+        type: string
+    type: object
+  response.R-uint:
+    properties:
+      code:
+        type: integer
+      data:
+        type: integer
+      message:
+        type: string
+    type: object
+  response.R-vo_User:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/vo.User'
+      message:
+        type: string
+    type: object
+  vo.User:
+    properties:
+      account:
+        type: string
+      avatar:
+        type: string
+      createTime:
+        type: string
+      deleteTime:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      profile:
+        type: string
+      role:
+        type: string
+      updateTime:
+        type: string
+      userName:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:10086
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API 接口文档, 一个适用于 Java 程序员的 Golang web 模板
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go_Web_Template
+  version: "1.0"
+paths:
+  /user/admin/create:
+    post:
+      consumes:
+      - application/json
+      description: 管理员接口, 使用默认密码 12345678 创建一个用户, 返回用户 id
+      parameters:
+      - description: 创建用户参数
+        in: body
+        name: userCreateDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-uint'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 创建新用户
+      tags:
+      - user
+      - admin
+  /user/admin/delete/{id}:
+    delete:
+      description: 管理员接口, 删除用户
+      parameters:
+      - description: 要删除的用户 id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-string'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 删除用户
+      tags:
+      - user
+      - admin
+  /user/admin/info/{id}:
+    get:
+      description: 管理员接口, 根据 id 获取用户
+      parameters:
+      - description: 要查询的用户 id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-vo_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 查询用户信息
+      tags:
+      - user
+      - admin
+  /user/admin/page/{curPage}/{pageSize}:
+    post:
+      consumes:
+      - application/json
+      description: 管理员接口, 分页获取用户列表
+      parameters:
+      - description: 用户查询条件
+        in: body
+        name: user
+        schema:
+          $ref: '#/definitions/entity.User'
+      - description: 当前页
+        in: path
+        name: curPage
+        required: true
+        type: integer
+      - description: 每页大小
+        in: path
+        name: pageSize
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-entity_Page-vo_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 查询用户列表
+      tags:
+      - user
+      - admin
+  /user/admin/update:
+    put:
+      consumes:
+      - application/json
+      description: 管理员接口, 更新用户信息
+      parameters:
+      - description: 用户更新参数
+        in: body
+        name: userUpdateDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-string'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 更新用户信息
+      tags:
+      - user
+      - admin
+  /user/info:
+    get:
+      description: 从 session 中获取已登录用户的信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-vo_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 获取登录用户信息
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 接收用户账号密码进行登录, 并保存登录态
+      parameters:
+      - description: 用户登录参数
+        in: body
+        name: userLoginDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-vo_User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 用户登录
+      tags:
+      - user
+  /user/logout:
+    post:
+      description: 用户注销登录
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 注销
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: 接收用户账号密码进行注册, 注册成功返回用户的 id
+      parameters:
+      - description: 用户注册参数
+        in: body
+        name: userRegisterDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-uint'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 用户注册
+      tags:
+      - user
+  /user/update:
+    put:
+      consumes:
+      - application/json
+      description: 更新登录用户自己的信息
+      parameters:
+      - description: 用户更新参数
+        in: body
+        name: userUpdateDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.R-string'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.R-string'
+      summary: 更新用户信息
+      tags:
+      - user
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
